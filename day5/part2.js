@@ -16,7 +16,6 @@ const Part2 = () => {
             let prePurgedPolymer = polymer.filter(u => u.toLowerCase() !== unit);
 
             purgedPolymers.push(getPurgedPolymer(prePurgedPolymer));
-            console.log('pre purged with', unit);
         });
 
         return purgedPolymers.sort((p1, p2) => p1.length - p2.length)[0];
@@ -33,27 +32,19 @@ const Part2 = () => {
     function getPurgedPolymer(polymer) {
         let isPurging = true;
         let newPolymer = [...polymer];
-        let purgeIndexes = [];
-        let jumpSize = 1;
 
         while (isPurging) {
             isPurging = false;
-            jumpSize = 1;
 
-            for (let i = 0; i < newPolymer.length; i += jumpSize) {
+            for (let i = newPolymer.length - 2; i >= 0; --i) {
                 if (i !== newPolymer.length - 1) {
                     if (getShouldPurge(newPolymer[i], newPolymer[i + 1])) {
-                        purgeIndexes.push(i, i + 1);
-                        // skip next index if this and the next one should be purged
-                        jumpSize = 2;
+                        newPolymer.splice(i, 2);
+                        if (i == newPolymer.length) {
+                            --i;
+                        }
                     }
                 }
-            }
-
-            if (purgeIndexes.length) {
-                newPolymer = purge(newPolymer, purgeIndexes);
-                purgeIndexes = [];
-                isPurging = true;
             }
         }
 
